@@ -12,7 +12,7 @@ class MainWindow:
     """Ventana principal de la aplicación"""
     
     def __init__(self):
-        self.root = ThemedTk(theme="Equilux")
+        self.root = ThemedTk(theme="adapta")
         self.root.title("Gestor de Eventos Universitario")
         self.root.geometry("1200x700")
         self.root.minsize(1000, 600)
