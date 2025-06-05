@@ -1,5 +1,5 @@
 # Gestor-de-Eventos
-<p>Proyecto Final, tecer period, Sugundo Parcial 2025.</p>
+<p>Proyecto Final, tercer periodo, Sugundo Parcial 2025.</p>
 <h2>Requisitos</h2>
 <ul>
 <li>tkinter</li>
