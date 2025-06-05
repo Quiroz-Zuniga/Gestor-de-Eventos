@@ -1,7 +1,7 @@
 """
 Módulo con todas las consultas SQL del sistema
 """
-from database.connetion import db
+from database.connection import db
 from datetime import datetime
 
 class EventoQueries:
