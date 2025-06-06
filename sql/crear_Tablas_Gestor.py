@@ -53,6 +53,16 @@ try:
         )
     """)
 
+    # Tabla usuarios (solo para el usuario administrador o futuros usuarios)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            usuario VARCHAR(50) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            rol VARCHAR(20) DEFAULT 'admin'
+        )
+    """)
+
     print("Tablas creadas correctamente.")
 
 except Error as err:
