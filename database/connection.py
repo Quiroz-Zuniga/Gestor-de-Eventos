@@ -59,10 +59,49 @@ class DatabaseConnection:
             self.connection.close()
             logger.info("Conexión cerrada")
 
-# Bloque ejecutable
-if __name__ == "__main__":
-    db = DatabaseConnection()
-    if db.connect():
-        print("Conexión exitosa.")
-    else:
-        print("No se pudo conectar a la base de datos.")
+    def execute_query(self, query, params=None):
+        """Ejecuta una consulta SELECT y retorna los resultados"""
+        try:
+            connection = self.get_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+
+            result = cursor.fetchall()
+            cursor.close()
+            return result
+
+        except Error as e:
+            logger.error(f"Error ejecutando consulta: {e}")
+            return None
+
+    def execute_update(self, query, params=None):
+        """Ejecuta consultas INSERT, UPDATE, DELETE"""
+        try:
+            connection = self.get_connection()
+            cursor = connection.cursor()
+
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+
+            if query.strip().upper().startswith('INSERT'):
+                result = cursor.lastrowid
+            else:
+                result = cursor.rowcount
+
+            cursor.close()
+            return result
+
+        except Error as e:
+            logger.error(f"Error ejecutando actualización: {e}")
+            return None
+
+# Instancia global para usar en queries.py
+db = DatabaseConnection()
+db.connect()
+

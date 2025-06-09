@@ -4,11 +4,12 @@ Modelo para la entidad Participante
 import re
 from datetime import datetime
 from database.queries import ParticipanteQueries
+from utils.validations import Validaciones
 
 class Participante:
     """Clase modelo para representar un participante"""
-    
-    def __init__(self, id_participante=None, nombre="", apellido="", email="", 
+
+    def __init__(self, id_participante=None, nombre="", apellido="", email="",
                  telefono="", fecha_registro=None, total_eventos=0):
         self.id_participante = id_participante
         self.nombre = nombre
@@ -17,7 +18,7 @@ class Participante:
         self.telefono = telefono
         self.fecha_registro = fecha_registro
         self.total_eventos = total_eventos
-    
+
     @classmethod
     def from_dict(cls, data):
         """Crea una instancia de Participante desde un diccionario"""
@@ -30,7 +31,7 @@ class Participante:
             fecha_registro=data.get('fecha_registro'),
             total_eventos=data.get('total_eventos', 0)
         )
-    
+
     def to_dict(self):
         """Convierte la instancia a diccionario"""
         return {
@@ -42,23 +43,20 @@ class Participante:
             'fecha_registro': self.fecha_registro,
             'total_eventos': self.total_eventos
         }
-    
+
     def guardar(self):
         """Guarda el participante en la base de datos (crear o actualizar)"""
-        # Validar antes de guardar
         errores = self.validar()
         if errores:
             raise ValueError("Errores de validación: " + ", ".join(errores))
-        
+
         if self.id_participante:
-            # Actualizar participante existente
             result = ParticipanteQueries.actualizar(
-                self.id_participante, self.nombre, self.apellido, 
+                self.id_participante, self.nombre, self.apellido,
                 self.email, self.telefono
             )
             return result is not None
         else:
-            # Crear nuevo participante
             result = ParticipanteQueries.crear(
                 self.nombre, self.apellido, self.email, self.telefono
             )
@@ -66,13 +64,13 @@ class Participante:
                 self.id_participante = result
                 return True
             return False
-    
+
     def eliminar(self):
         """Elimina el participante de la base de datos"""
         if self.id_participante:
             return ParticipanteQueries.eliminar(self.id_participante) is not None
         return False
-    
+
     @staticmethod
     def obtener_todos():
         """Obtiene todos los participantes como objetos Participante"""
@@ -80,7 +78,7 @@ class Participante:
         if datos:
             return [Participante.from_dict(participante) for participante in datos]
         return []
-    
+
     @staticmethod
     def obtener_por_id(id_participante):
         """Obtiene un participante por su ID"""
@@ -88,7 +86,7 @@ class Participante:
         if datos:
             return Participante.from_dict(datos)
         return None
-    
+
     @staticmethod
     def buscar(criterio):
         """Busca participantes por criterio"""
@@ -96,16 +94,29 @@ class Participante:
         if datos:
             return [Participante.from_dict(participante) for participante in datos]
         return []
-    
+
     def validar(self):
         """Valida los datos del participante"""
         errores = []
-        
+
         # Validar nombre
-        if not self.nombre or self.nombre.strip() == "":
-            errores.append("El nombre es obligatorio")
-        elif len(self.nombre.strip()) < 2:
-            errores.append("El nombre debe tener al menos 2 caracteres")
-        
+        valido, mensaje = Validaciones.validar_nombre(self.nombre, "nombre")
+        if not valido:
+            errores.append(mensaje)
+
         # Validar apellido
-        if not self.apellido or self.apell
+        valido, mensaje = Validaciones.validar_nombre(self.apellido, "apellido")
+        if not valido:
+            errores.append(mensaje)
+
+        # Validar email
+        valido, mensaje = Validaciones.validar_email(self.email)
+        if not valido:
+            errores.append(mensaje)
+
+        # Validar teléfono
+        valido, mensaje = Validaciones.validar_telefono(self.telefono)
+        if not valido:
+            errores.append(mensaje)
+
+        return errores
