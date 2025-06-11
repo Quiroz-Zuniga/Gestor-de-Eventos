@@ -3,6 +3,7 @@ Utilidades para validaciones del sistema
 """
 import re
 from datetime import datetime
+from validation import Validaciones
 
 class Validaciones:
     """Clase con métodos estáticos para validaciones comunes"""
@@ -204,3 +205,4 @@ class Validaciones:
         
         patron = r'^[^@]+@[^@]+\.[^@]+$'
         return re.match(patron, email.strip()) is not None
+        
