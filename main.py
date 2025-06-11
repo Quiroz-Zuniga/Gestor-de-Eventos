@@ -235,4 +235,5 @@ class MainWindow:
         messagebox.showinfo("Info", "Función 'Ver Eventos del Participante' no implementada aún")
 
 if __name__ == "__main__":
-    app = MainWindow()
+    app = MainWindow() 
+    
