@@ -2,12 +2,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from themedes import ThemedTk # type: ignore
 from datetime import datetime
-
 from gui.evento_form import EventoForm
 from gui.participante_form import ParticipanteForm
-
 from models.event import Evento
 from models.participante import Participante
+from gui.nuevas_inscripciones import NuevaInscripcionForm
 
 class MainWindow:
     def __init__(self):
@@ -20,17 +19,14 @@ class MainWindow:
         self.participantes_list = []
 
         self.crear_interfaz()
-
         self.cargar_eventos()
         self.cargar_participantes()
-
         self.verificar_conexion()
-
         self.root.mainloop()
 
     def crear_interfaz(self):
-        main_frame = ttk.Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        main_frame = ttk.Frame(self.root) 
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10) 
 
         title_label = ttk.Label(main_frame, text="Gestor de Eventos Universitario", font=('Arial', 16, 'bold'), foreground='#2E86AB')
         title_label.pack(pady=(0, 20))
@@ -73,7 +69,7 @@ class MainWindow:
         stats_frame.pack(fill=tk.X, pady=(0, 10))
 
         stats_grid = ttk.Frame(stats_frame)
-        stats_grid.pack(fill=tk.X)
+        stats_grid.pack(fill=tk.X) #
 
         self.stats_labels = {}
         stats_info = [
@@ -83,7 +79,7 @@ class MainWindow:
             ("eventos_proximos", "Eventos Próximos")
         ]
 
-        for i, (key, label) in enumerate(stats_info):
+        for i, (key, label) in enumerate(stats_info): 
             frame = ttk.Frame(stats_grid)
             frame.grid(row=0, column=i, padx=20, pady=5, sticky="ew")
 
@@ -114,7 +110,7 @@ class MainWindow:
         self.eventos_tree = ttk.Treeview(tree_frame, columns=columns, show='headings', height=15)
 
         for col in columns:
-            self.eventos_tree.heading(col, text=col)
+            self.eventos_tree.heading(col, text=col) #
             self.eventos_tree.column(col, anchor=tk.CENTER)
 
         v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
@@ -226,13 +222,56 @@ class MainWindow:
         self.root.update_idletasks()
 
     def nueva_inscripcion(self):
-        messagebox.showinfo("Info", "Función 'Nueva Inscripción' no implementada aún")
+        NuevaInscripcionForm(master=self.root)
 
     def ver_participantes_evento(self):
-        messagebox.showinfo("Info", "Función 'Ver Participantes del Evento' no implementada aún")
+        # Obtener selección actual
+        selected = self.eventos_tree.focus()
+        if not selected:
+            messagebox.showwarning("Advertencia", "Debe seleccionar un evento.")
+            return
+
+        evento_id = self.eventos_tree.item(selected)['values'][0]
+
+        # Obtener participantes inscritos
+        from database.queries import InscripcionQueries
+        participantes = InscripcionQueries.obtener_participantes_evento(evento_id)
+
+        if not participantes:
+            messagebox.showinfo("Info", "No hay participantes inscritos en este evento.")
+            return
+
+        # Construir mensaje
+        mensaje = "Participantes inscritos:\n\n"
+        for p in participantes:
+            mensaje += f"- {p['nombre']} {p['apellido']} ({p['email']}) - Estado: {p['estado']}\n"
+
+        messagebox.showinfo("Participantes del Evento", mensaje)
+
 
     def ver_eventos_participante(self):
-        messagebox.showinfo("Info", "Función 'Ver Eventos del Participante' no implementada aún")
+        # Obtener selección actual
+        selected = self.participantes_tree.focus()
+        if not selected:
+            messagebox.showwarning("Advertencia", "Debe seleccionar un participante.")
+            return
+
+        participante_id = self.participantes_tree.item(selected)['values'][0]
+
+        # Obtener eventos del participante
+        from database.queries import InscripcionQueries
+        eventos = InscripcionQueries.obtener_eventos_participante(participante_id)
+
+        if not eventos:
+            messagebox.showinfo("Info", "El participante no está inscrito en ningún evento.")
+            return
+
+        # Construir mensaje
+        mensaje = "Eventos en los que participa:\n\n"
+        for e in eventos:
+            mensaje += f"- {e['nombre']} ({e['fecha_inicio'].strftime('%d/%m/%Y %H:%M')}) - Estado: {e['estado']}\n"
+
+        messagebox.showinfo("Eventos del Participante", mensaje)
 
 if __name__ == "__main__":
     app = MainWindow() 

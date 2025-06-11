@@ -135,3 +135,14 @@ class InscripcionQueries:
         ORDER BY e.fecha_inicio DESC
         """
         return db.execute_query(query, (id_participante,))
+
+    @staticmethod
+    def verificar_inscripcion_existe(id_evento, id_participante):
+        """Verifica si ya existe una inscripción"""
+        query = """
+        SELECT COUNT(*) as count
+        FROM inscripciones
+        WHERE id_evento = %s AND id_participante = %s AND estado != 'cancelado'
+        """
+        result = db.execute_query(query, (id_evento, id_participante))
+        return result[0]['count'] > 0 if result else False
