@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from themedes import ThemedTk # type: ignore
+from ttkthemes import ThemedTk 
 from datetime import datetime
 from gui.evento_form import EventoForm
 from gui.participante_form import ParticipanteForm
@@ -275,4 +275,4 @@ class MainWindow:
 
 if __name__ == "__main__":
     app = MainWindow() 
-    
+

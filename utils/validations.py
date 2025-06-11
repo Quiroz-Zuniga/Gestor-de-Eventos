@@ -204,11 +204,11 @@ class Validaciones:
         
         patron = r'^[^@]+@[^@]+\.[^@]+$'
         return re.match(patron, email.strip()) is not None
-        @staticmethod
-
+       
+    @staticmethod
     def actualizar_estadisticas(estadisticas):
         """
-        Actualiza estadísticas generales del sistema
+        Actualiza estadísticas generales del sistema 
         Returns: dict - Estadísticas actualizadas
         """
         if not isinstance(estadisticas, dict):
