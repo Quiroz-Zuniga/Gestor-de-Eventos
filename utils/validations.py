@@ -218,4 +218,5 @@ class Validaciones:
         estadisticas["visitas"] = estadisticas.get("visitas", 0) + 1
         estadisticas["consultas_validadas"] = estadisticas.get("consultas_validadas", 0) + 1
         
-        return estadisticas 
+        return estadisticas
+
