@@ -3,7 +3,7 @@ Utilidades para validaciones del sistema
 """
 import re
 from datetime import datetime
-
+from validation import Validaciones
 class Validaciones:
     """Clase con métodos estáticos para validaciones comunes"""
     
@@ -204,3 +204,18 @@ class Validaciones:
         
         patron = r'^[^@]+@[^@]+\.[^@]+$'
         return re.match(patron, email.strip()) is not None
+        @staticmethod
+
+    def actualizar_estadisticas(estadisticas):
+        """
+        Actualiza estadísticas generales del sistema
+        Returns: dict - Estadísticas actualizadas
+        """
+        if not isinstance(estadisticas, dict):
+            return {"error": "Las estadísticas deben ser un diccionario válido"}
+        
+        # Simulación de actualización
+        estadisticas["visitas"] = estadisticas.get("visitas", 0) + 1
+        estadisticas["consultas_validadas"] = estadisticas.get("consultas_validadas", 0) + 1
+        
+        return estadisticas
