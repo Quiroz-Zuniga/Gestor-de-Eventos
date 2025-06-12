@@ -7,6 +7,7 @@ from gui.participante_form import ParticipanteForm
 from models.event import Evento
 from models.participante import Participante
 from gui.nuevas_inscripciones import NuevaInscripcionForm
+from utils.validations import Validaciones
 
 class MainWindow:
     def __init__(self):
@@ -32,27 +33,28 @@ class MainWindow:
         title_label.pack(pady=(0, 20))
 
         self.crear_frame_estadisticas(main_frame)
-    def actualizar_estadisticas(self):
-        """
-        Actualiza las estadísticas generales en la interfaz
-        """
-        datos_estadisticas = {
-            "eventos_activos": len([evento for evento in self.eventos_list if evento.estado == "Activo"]),
-            "total_participantes": len(self.participantes_list),
-            "inscripciones_confirmadas": sum(evento.inscritos for evento in self.eventos_list),
-            "eventos_proximos": len([evento for evento in self.eventos_list if evento.fecha_inicio > datetime.now()])
-        }
 
-        # Validar datos antes de actualizar
-        es_valido, mensaje_error = Validaciones.validar_numero_entero(datos_estadisticas["total_participantes"], "Total Participantes", 0)
-        if not es_valido:
-            self.actualizar_status(f"Error en estadísticas: {mensaje_error}")
-            return
+    # def actualizar_estadisticas(self):
+    #     """
+    #     Actualiza las estadísticas generales en la interfaz
+    #     """
+    #     datos_estadisticas = {
+    #         "eventos_activos": len([evento for evento in self.eventos_list if evento.estado == "Activo"]),
+    #         "total_participantes": len(self.participantes_list),
+    #         "inscripciones_confirmadas": sum(evento.inscritos for evento in self.eventos_list),
+    #         "eventos_proximos": len([evento for evento in self.eventos_list if evento.fecha_inicio > datetime.now()])
+    #     }
 
-        for key, value in datos_estadisticas.items():
-            self.stats_labels[key].config(text=str(value))
+    #     # Validar datos antes de actualizar
+    #     es_valido, mensaje_error = Validaciones.validar_numero_entero(datos_estadisticas["total_participantes"], "Total Participantes", 0)
+    #     if not es_valido:
+    #         self.actualizar_status(f"Error en estadísticas: {mensaje_error}")
+    #         return
 
-        self.actualizar_status("Estadísticas actualizadas")
+    #     for key, value in datos_estadisticas.items():
+    #         self.stats_labels[key].config(text=str(value))
+
+    #     self.actualizar_status("Estadísticas actualizadas")
 
         self.notebook = ttk.Notebook(main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True, pady=(20, 0))
@@ -137,7 +139,7 @@ class MainWindow:
                 evento.estado
             ))
 
-        self.actualizar_estadisticas()  # Llamar la actualización después de cargar eventos
+        # self.actualizar_estadisticas()  # Llamar la actualización después de cargar eventos
         self.actualizar_status(f"Cargados {len(self.eventos_list)} eventos")
 
     def nuevo_evento(self):
@@ -191,7 +193,7 @@ class MainWindow:
                 participante.total_eventos
             ))
 
-        self.actualizar_estadisticas()  # Llamar la actualización después de cargar participantes
+        # self.actualizar_estadisticas()  # Llamar la actualización después de cargar participantes
         self.actualizar_status(f"Cargados {len(self.participantes_list)} participantes")
 
     def nuevo_participante(self):
