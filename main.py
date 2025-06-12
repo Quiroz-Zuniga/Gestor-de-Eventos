@@ -70,7 +70,7 @@ class MainWindow:
         stats_frame.pack(fill=tk.X, pady=(0, 10))
 
         stats_grid = ttk.Frame(stats_frame)
-        stats_grid.pack(fill=tk.X) #
+        stats_grid.pack(fill=tk.X) 
 
         self.stats_labels = {}
         stats_info = [
@@ -222,7 +222,7 @@ class MainWindow:
         ttk.Label(tema_frame, text="Tema:").pack(side=tk.LEFT, padx=(0, 5))
 
         # Solo mostrar temas realmente disponibles y agregar uno extra si existe
-        posibles_temas = ["vista", "equilux", "yaru", "croc", "radiance", "adapta", "plastik"]
+        posibles_temas = ["vista", "equilux", "yaru", "croc", "radiance", "xpnative", "plastik"]
         disponibles = [t for t in posibles_temas if t in self.root.get_themes()]
 
         # Agregar uno extra automáticamente si existe y no está en la lista
