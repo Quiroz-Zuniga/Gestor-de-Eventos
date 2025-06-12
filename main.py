@@ -211,8 +211,38 @@ class MainWindow:
         ttk.Button(controles_frame, text="Ver Eventos del Participante", command=self.ver_eventos_participante).pack(side=tk.LEFT, padx=5)
 
     def crear_barra_estado(self, parent):
+        # Barra de estado (izquierda)
         self.status_bar = ttk.Label(parent, text="Listo", relief=tk.SUNKEN, anchor=tk.W)
-        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X, pady=(10, 0))
+        self.status_bar.pack(side=tk.LEFT, fill=tk.X, expand=True, pady=(10, 0))
+
+        # Frame para el combobox (derecha)
+        tema_frame = ttk.Frame(parent)
+        tema_frame.pack(side=tk.RIGHT, pady=(10, 0), padx=(0, 10))
+
+        ttk.Label(tema_frame, text="Tema:").pack(side=tk.LEFT, padx=(0, 5))
+
+        # Solo mostrar temas realmente disponibles y agregar uno extra si existe
+        posibles_temas = ["vista", "equilux", "yaru", "croc", "radiance", "adapta", "plastik"]
+        disponibles = [t for t in posibles_temas if t in self.root.get_themes()]
+
+        # Agregar uno extra automáticamente si existe y no está en la lista
+        todos_los_temas = self.root.get_themes()
+        for tema in todos_los_temas:
+            if tema not in disponibles:
+                disponibles.append(tema)
+                break  # Solo agrega uno extra
+
+        self.temas_disponibles = disponibles
+        self.tema_actual = tk.StringVar(value="equilux")
+        self.tema_combobox = ttk.Combobox(
+            tema_frame,
+            values=self.temas_disponibles,
+            textvariable=self.tema_actual,
+            state="readonly",
+            width=12
+        )
+        self.tema_combobox.pack(side=tk.LEFT)
+        self.tema_combobox.bind("<<ComboboxSelected>>", self.cambiar_tema)
 
     def verificar_conexion(self):
         self.actualizar_status("Conectado a la base de datos")
@@ -272,6 +302,16 @@ class MainWindow:
             mensaje += f"- {e['nombre']} ({e['fecha_inicio'].strftime('%d/%m/%Y %H:%M')}) - Estado: {e['estado']}\n"
 
         messagebox.showinfo("Eventos del Participante", mensaje)
+
+    def cambiar_tema(self, event):
+        tema_seleccionado = self.tema_actual.get()
+        try:
+            self.root.set_theme(tema_seleccionado)
+            self.actualizar_status(f"Tema cambiado a '{tema_seleccionado}'")
+        except Exception as e:
+            self.actualizar_status(f"No se pudo aplicar el tema '{tema_seleccionado}'")
+            messagebox.showerror("Error", f"No se pudo aplicar el tema '{tema_seleccionado}'.\n{e}")
+
 
 if __name__ == "__main__":
     app = MainWindow()
