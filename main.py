@@ -13,7 +13,7 @@ class MainWindow:
     def __init__(self):
         self.root = ThemedTk(theme="equilux")
         self.root.title("Gestor de Eventos Universitario")
-        self.root.geometry("1200x700")
+        self.root.geometry("1200x600")
         self.root.minsize(1000, 600)
 
         self.eventos_list = []
@@ -106,13 +106,19 @@ class MainWindow:
     def crear_treeview_eventos(self, parent):
         tree_frame = ttk.Frame(parent)
         tree_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
-
-        columns = ('ID', 'Nombre', 'Fecha Inicio', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
+        # Si no lesgusta el campo de descripción, se puede eliminar o ajustar el ancho
+        # de la columna en la línea de abajo
+        columns = ('ID', 'Nombre', 'Descripción','Fecha Inicio', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
         self.eventos_tree = ttk.Treeview(tree_frame, columns=columns, show='headings', height=15)
-
+        
+        
+        
         for col in columns:
             self.eventos_tree.heading(col, text=col) #
             self.eventos_tree.column(col, anchor=tk.CENTER)
+            
+            #borrar la columna de descripción si no se quiere mostrar
+            self.eventos_tree.column("Descripción", width=250, anchor=tk.W)
 
         v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
         h_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.eventos_tree.xview)
@@ -132,6 +138,8 @@ class MainWindow:
             self.eventos_tree.insert('', 'end', values=(
                 evento.id_evento,
                 evento.nombre,
+                #borrar la columna de descripción si no se quiere mostrar
+                evento.descripcion,
                 evento.fecha_inicio_str(),
                 evento.ubicacion,
                 evento.categoria,
