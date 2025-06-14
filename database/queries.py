@@ -146,3 +146,15 @@ class InscripcionQueries:
         """
         result = db.execute_query(query, (id_evento, id_participante))
         return result[0]['count'] > 0 if result else False
+    @staticmethod
+    def obtener_estadisticas():
+        """Obtiene estadísticas generales del sistema"""
+        query = """
+        SELECT 
+            (SELECT COUNT(*) FROM eventos WHERE estado = 'activo') AS eventos_activos,
+            (SELECT COUNT(*) FROM participantes) AS total_participantes,
+            (SELECT COUNT(*) FROM inscripciones WHERE estado = 'confirmado') AS inscripciones_confirmadas,
+            (SELECT COUNT(*) FROM eventos WHERE fecha_inicio >= NOW() AND estado = 'activo') AS eventos_proximos
+        """
+        result = db.execute_query(query)
+        return result[0] if result else None
