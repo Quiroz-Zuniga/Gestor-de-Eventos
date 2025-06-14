@@ -155,37 +155,4 @@ class EventoForm(tk.Toplevel):
             messagebox.showerror("Error", "No se pudo guardar el evento.")
     
 
-    # def guardar_evento(self):
-    #     datos = {k: e.get().strip() for k, e in self.entries.items()}
-    #     datos["estado"] = self.estado_var.get()
-        
-    #     fecha_inicio_str = f"{self.fecha_inicio_entry.get()} {self.hora_inicio_entry.get().strip()}"
-    #     fecha_fin_str = f"{self.fecha_fin_entry.get()} {self.hora_fin_entry.get().strip()}"
-
-    #     # Validaciones básicas (pueden expandirse)
-    #     valido, fechas = Validaciones.validar_fecha_evento(datos["fecha_inicio"], datos["fecha_fin"])
-    #     if not valido:
-    #         messagebox.showerror("Error de fecha", fechas)
-    #         return
-
-    #     valido_cap, cap = Validaciones.validar_numero_entero(datos["capacidad_maxima"], "capacidad", minimo=1)
-    #     if not valido_cap:
-    #         messagebox.showerror("Error de capacidad", cap)
-    #         return
-
-    #     self.evento.nombre = datos["nombre"]
-    #     self.evento.descripcion = datos["descripcion"]
-    #     self.evento.fecha_inicio = fechas["fecha_inicio"]
-    #     self.evento.fecha_fin = fechas.get("fecha_fin")
-    #     self.evento.ubicacion = datos["ubicacion"]
-    #     self.evento.capacidad_maxima = cap
-    #     self.evento.categoria = datos["categoria"]
-    #     self.evento.estado = datos["estado"]
-
-    #     if self.evento.guardar():
-    #         messagebox.showinfo("Éxito", "Evento guardado correctamente.")
-    #         if self.callback:
-    #             self.callback()
-    #         self.destroy()
-    #     else:
-    #         messagebox.showerror("Error", "No se pudo guardar el evento.")
+    

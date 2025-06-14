@@ -108,9 +108,34 @@ class MainWindow:
         tree_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
         # Si no lesgusta el campo de descripción, se puede eliminar o ajustar el ancho
         # de la columna en la línea de abajo
-        columns = ('ID', 'Nombre', 'Descripción','Fecha Inicio', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
-        self.eventos_tree = ttk.Treeview(tree_frame, columns=columns, show='headings', height=15)
+        columns = ('ID', 'Nombre', 'Descripción','Fecha Inicio','Fecha Fin', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
+        self.eventos_tree = ttk.Treeview(tree_frame, columns=columns, show='headings')
         
+        # Definición y ajuste de encabezados y columnas
+        self.eventos_tree.heading('ID', text='ID')
+        self.eventos_tree.column('ID', width=50, anchor=tk.CENTER)
+
+        self.eventos_tree.heading('Nombre', text='Nombre')
+        self.eventos_tree.column('Nombre', width=150, anchor=tk.W)
+
+        self.eventos_tree.heading('Descripción', text='Descripción')
+        self.eventos_tree.column('Descripción', width=250, anchor=tk.W)
+
+        self.eventos_tree.heading('Fecha Inicio', text='Fecha Inicio')
+        self.eventos_tree.column('Fecha Inicio', width=160, anchor=tk.CENTER)
+
+        self.eventos_tree.heading('Ubicación', text='Ubicación')
+        self.eventos_tree.column('Ubicación', width=150, anchor=tk.W)
+
+        self.eventos_tree.heading('Categoría', text='Categoría')
+        self.eventos_tree.column('Categoría', width=100, anchor=tk.CENTER)
+
+        self.eventos_tree.heading('Inscritos/Capacidad', text='Inscritos/Capacidad')
+        self.eventos_tree.column('Inscritos/Capacidad', width=140, anchor=tk.CENTER)
+
+        self.eventos_tree.heading('Estado', text='Estado')
+        self.eventos_tree.column('Estado', width=90, anchor=tk.CENTER)
+
         
         
         for col in columns:
@@ -119,14 +144,26 @@ class MainWindow:
             
             #borrar la columna de descripción si no se quiere mostrar
             self.eventos_tree.column("Descripción", width=250, anchor=tk.W)
+            
+            v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
+            h_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.eventos_tree.xview)
+            self.eventos_tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
 
-        v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
-        h_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.eventos_tree.xview)
-        self.eventos_tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+            # Posicionamiento
+            self.eventos_tree.grid(row=0, column=0, sticky="nsew")
+            v_scrollbar.grid(row=0, column=1, sticky="ns")
+            h_scrollbar.grid(row=1, column=0, sticky="ew")
+            
+            tree_frame.grid_rowconfigure(0, weight=1)
+            tree_frame.grid_columnconfigure(0, weight=1)
 
-        self.eventos_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        h_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+        # v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
+        # h_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.eventos_tree.xview)
+        # self.eventos_tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+
+        # self.eventos_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        # h_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
     def cargar_eventos(self):
         for item in self.eventos_tree.get_children():
@@ -140,7 +177,8 @@ class MainWindow:
                 evento.nombre,
                 #borrar la columna de descripción si no se quiere mostrar
                 evento.descripcion,
-                evento.fecha_inicio_str(),
+                evento.fecha_inicio.strftime("%d/%m/%Y %I:%M %p"),
+                evento.fecha_fin.strftime("%d/%m/%Y %I:%M %p"),
                 evento.ubicacion,
                 evento.categoria,
                 f"{evento.inscritos}/{evento.capacidad_maxima}",
