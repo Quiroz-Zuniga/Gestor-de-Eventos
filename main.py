@@ -5,33 +5,13 @@ from datetime import datetime
 from gui.evento_form import EventoForm
 from gui.participante_form import ParticipanteForm
 from models.event import Evento
-from models.participante import Participante       
+from models.participante import Participante
 from gui.nuevas_inscripciones import NuevaInscripcionForm
-from validation import Validaciones
+from utils.validations import Validaciones
+from database.queries import InscripcionQueries
+
 
 class MainWindow:
-    def __init__(self):
-        self.eventos_list = []
-        self.participantes_id= []
-
-        self.stats_labels[key].config(text=str(value))
-
-class MainWindow:
-    def __init__(self):
-        self.status_bar = None  # Asegurar que la variable `self.status_bar` existe
-        self.eventos_list = []
-        self.participantes_list = []
-
-    def actualizar_status(self, mensaje):
-        print(mensaje)  # Puedes reemplazar esto con `self.status_bar.config(text=mensaje)`
-
-    def actualizar_estadisticas(self):
-        self.actualizar_status("Estadísticas actualizadas")
-
-class MainWindow:
-    def actualizar_estadisticas(self):
-        self.actualizar_status("Estadísticas actualizadas")  # ✅ Correcto
-
     def __init__(self):
         self.root = ThemedTk(theme="equilux")
         self.root.title("Gestor de Eventos Universitario")
@@ -44,8 +24,10 @@ class MainWindow:
         self.crear_interfaz()
         self.cargar_eventos()
         self.cargar_participantes()
+        self.actualizar_estadisticas()  # <-- Llamada directa al iniciar
         self.verificar_conexion()
         self.root.mainloop()
+
 
     def crear_interfaz(self):
         main_frame = ttk.Frame(self.root) 
@@ -55,30 +37,6 @@ class MainWindow:
         title_label.pack(pady=(0, 20))
 
         self.crear_frame_estadisticas(main_frame)
-
-        self.actualizar_estadisticas()
-        """
-        Actualiza las estadísticas generales en la interfaz
-        """
-        datos_estadisticas = {
-            "eventos_activos": len([evento for evento in self.eventos_list if evento.estado == "Activo"]),
-            "total_participantes": len(self.participantes_list),
-            "inscripciones_confirmadas": sum(int(evento.inscritos) for evento in self.eventos_list if evento.inscritos.isdigit()),
-            "eventos_proximos": len([evento for evento in self.eventos_list if evento.fecha_inicio > datetime.now()])
-        }
-
-        # Validar datos antes de actualizar
-        for key, value in datos_estadisticas.items():
-            es_valido, mensaje_error = Validaciones.validar_numero_entero(value, key, 0)
-            if not es_valido:
-                self.actualizar_status(f"Error en estadísticas: {mensaje_error}")
-                return
-
-            self.stats_labels[key].config(text=str(value))
-
-        self.actualizar_status("Estadísticas actualizadas")
-
-
         self.notebook = ttk.Notebook(main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True, pady=(20, 0))
 
@@ -87,6 +45,24 @@ class MainWindow:
         self.crear_pestaña_inscripciones()
 
         self.crear_barra_estado(main_frame)
+
+    def actualizar_estadisticas(self):
+        """
+        Actualiza las estadísticas generales en la interfaz
+        """
+        datos_estadisticas = InscripcionQueries.obtener_estadisticas()
+        if not datos_estadisticas:
+            self.actualizar_status("No se pudieron obtener las estadísticas.")
+            return
+
+        for key, value in datos_estadisticas.items():
+            if key in self.stats_labels:
+                self.stats_labels[key].config(text=str(value))
+
+        self.actualizar_status("Estadísticas actualizadas")
+
+
+
 
     def crear_frame_estadisticas(self, parent):
         stats_frame = ttk.LabelFrame(parent, text="Estadísticas Generales", padding=10)
@@ -145,7 +121,7 @@ class MainWindow:
         v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         h_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.cargar_eventos()
+    def cargar_eventos(self):
         for item in self.eventos_tree.get_children():
             self.eventos_tree.delete(item)
 
@@ -162,7 +138,6 @@ class MainWindow:
                 evento.estado
             ))
 
-  #       self.actualizar_estadisticas()  # Llamar la actualización después de cargar eventos
         self.actualizar_status(f"Cargados {len(self.eventos_list)} eventos")
 
     def nuevo_evento(self):
@@ -199,7 +174,7 @@ class MainWindow:
         v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         h_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.cargar_participantes()
+    def cargar_participantes(self):
         for item in self.participantes_tree.get_children():
             self.participantes_tree.delete(item)
 
@@ -216,7 +191,7 @@ class MainWindow:
                 participante.total_eventos
             ))
 
-   #      self.actualizar_estadisticas()  # Llamar la actualización después de cargar participantes
+
         self.actualizar_status(f"Cargados {len(self.participantes_list)} participantes")
 
     def nuevo_participante(self):
@@ -337,4 +312,4 @@ class MainWindow:
 
 
 if __name__ == "__main__":
-    app = MainWindow() 
+    app = MainWindow()
