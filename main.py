@@ -13,7 +13,7 @@ class MainWindow:
     def __init__(self):
         self.root = ThemedTk(theme="equilux")
         self.root.title("Gestor de Eventos Universitario")
-        self.root.geometry("1200x600")
+        self.root.geometry("1200x650")
         self.root.minsize(1000, 600)
 
         self.eventos_list = []
