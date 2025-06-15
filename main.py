@@ -9,6 +9,43 @@ from models.participante import Participante
 from gui.nuevas_inscripciones import NuevaInscripcionForm
 from utils.validations import Validaciones
 from database.queries import InscripcionQueries
+from PyQt5.QtWidgets import QDialog, QMessageBox
+from PyQt5.QtCore import Qt
+
+
+class NuevoParticipanteDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Nuevo Participante")
+        self.setWindowModality(Qt.ApplicationModal)  
+        self.setWindowFlag(Qt.WindowStaysOnTopHint) 
+        self.lift()
+        self.attributes('-topmost', True)
+
+    def guardar(self):
+        nombre = self.nombre_input.text()
+        apellido = self.apellido_input.text()
+        email = self.email_input.text()
+        telefono = self.telefono_input.text()
+
+        if not nombre:
+            QMessageBox.warning(self, "Error", "El nombre es obligatorio.")
+            self.nombre_input.clear()
+            self.nombre_input.setFocus()
+            return
+        if not self.validar_email(email):
+            QMessageBox.warning(self, "Error", "Email inválido.")
+            self.email_input.clear()
+            self.email_input.setFocus()
+            return
+        
+
+        # Si todo está bien, guardar participante
+        self.accept()
+
+    def validar_email(self, email):
+        import re
+        return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
 
 class MainWindow:
@@ -313,3 +350,4 @@ class MainWindow:
 
 if __name__ == "__main__":
     app = MainWindow()
+

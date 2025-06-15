@@ -1,5 +1,11 @@
 import tkinter as tk
 from tkinter import font, messagebox
+import sys
+import os
+
+# Importa la clase MainWindow desde main.py
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from main import MainWindow
 
 class EventoLogin(tk.Tk):
     def __init__(self):
@@ -96,18 +102,25 @@ class EventoLogin(tk.Tk):
         self.login_button.config(bg=self.button_bg)
 
     def on_login_clicked(self, event):
-        username = self.username_var.get().strip()
+        username = self.username_var.get().strip().lower()
         password = self.password_var.get().strip()
+
+        # Diccionario de usuarios válidos (en minúsculas)
+        usuarios_validos = {
+            "ariana": "Hola123",
+            "razor": "Gaia05"
+        }
 
         if not username or not password:
             self.message_label.config(text="Por favor, ingresa usuario y contraseña.")
             return
 
-        # Check hardcoded credentials
-        if username.lower() == "ariana" and password == "Hola123":
+        if username in usuarios_validos and password == usuarios_validos[username]:
             self.message_label.config(text="")
-            messagebox.showinfo("Acceso concedido", f"¡Bienvenida, {username.capitalize()}!")
-            # Here could be transition or next window open
+            messagebox.showinfo("Acceso concedido", f"¡Bienvenido/a, {username.capitalize()}!")
+            self.destroy()  # Cierra la ventana de login
+            main_app = MainWindow()  # Abre la ventana principal
+            main_app.root.mainloop()
         else:
             self.message_label.config(text="Usuario o contraseña incorrectos.")
 
