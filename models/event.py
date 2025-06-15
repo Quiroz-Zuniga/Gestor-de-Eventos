@@ -8,8 +8,8 @@ class Evento:
     """Clase modelo para representar un evento"""
     
     def __init__(self, id_evento=None, nombre="", descripcion="", fecha_inicio=None, 
-                 fecha_fin=None, ubicacion="", capacidad_maxima=50, categoria="General", 
-                 estado="activo", fecha_creacion=None, inscritos=0):
+        fecha_fin=None, ubicacion="", capacidad_maxima=50, categoria="General", 
+        estado="activo", fecha_creacion=None, inscritos=0):
         self.id_evento = id_evento
         self.nombre = nombre
         self.descripcion = descripcion
