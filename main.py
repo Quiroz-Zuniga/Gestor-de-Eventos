@@ -9,6 +9,7 @@ from models.participante import Participante
 from gui.nuevas_inscripciones import NuevaInscripcionForm
 from utils.validations import Validaciones
 
+
 class MainWindow:
     def __init__(self):
         self.root = ThemedTk(theme="equilux")
@@ -26,44 +27,47 @@ class MainWindow:
         self.root.mainloop()
 
     def crear_interfaz(self):
-        main_frame = ttk.Frame(self.root) 
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10) 
+        self.main_frame = ttk.Frame(self.root) 
+        self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10) 
 
-        title_label = ttk.Label(main_frame, text="Gestor de Eventos Universitario", font=('Arial', 16, 'bold'), foreground='#2E86AB')
+        title_label = ttk.Label(self.main_frame, text="Gestor de Eventos Universitario", font=('Arial', 16, 'bold'), foreground='#2E86AB')
         title_label.pack(pady=(0, 20))
 
-        self.crear_frame_estadisticas(main_frame)
+    
+    
 
-    # def actualizar_estadisticas(self):
-    #     """
-    #     Actualiza las estadísticas generales en la interfaz
-    #     """
-    #     datos_estadisticas = {
-    #         "eventos_activos": len([evento for evento in self.eventos_list if evento.estado == "Activo"]),
-    #         "total_participantes": len(self.participantes_list),
-    #         "inscripciones_confirmadas": sum(evento.inscritos for evento in self.eventos_list),
-    #         "eventos_proximos": len([evento for evento in self.eventos_list if evento.fecha_inicio > datetime.now()])
-    #     }
+    def actualizar_estadisticas(self):
+        """
+        Actualiza las estadísticas generales en la interfaz
+        """
+        datos_estadisticas = {
+            "eventos_activos": len([evento for evento in self.eventos_list if evento.estado == "Activo"]),
+            "total_participantes": len(self.participantes_list),
+            "inscripciones_confirmadas": sum(evento.inscritos for evento in self.eventos_list),
+            "eventos_proximos": len([evento for evento in self.eventos_list if evento.fecha_inicio > datetime.now()])
+        }
 
-    #     # Validar datos antes de actualizar
-    #     es_valido, mensaje_error = Validaciones.validar_numero_entero(datos_estadisticas["total_participantes"], "Total Participantes", 0)
-    #     if not es_valido:
-    #         self.actualizar_status(f"Error en estadísticas: {mensaje_error}")
-    #         return
+        # Validar datos antes de actualizar
+        es_valido, mensaje_error = Validaciones.validar_numero_entero(datos_estadisticas["total_participantes"], "Total Participantes", 0)
+        if not es_valido:
+            self.actualizar_status(f"Error en estadísticas: {mensaje_error}")
+            return
 
-    #     for key, value in datos_estadisticas.items():
-    #         self.stats_labels[key].config(text=str(value))
+        for key, value in datos_estadisticas.items():
+            self.stats_labels[key].config(text=str(value))
 
-    #     self.actualizar_status("Estadísticas actualizadas")
-
-        self.notebook = ttk.Notebook(main_frame)
+        self.actualizar_status("Estadísticas actualizadas")
+        
+        
+        self.crear_frame_estadisticas(self.main_frame)
+        self.notebook = ttk.Notebook(self.main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True, pady=(20, 0))
 
         self.crear_pestaña_eventos()
         self.crear_pestaña_participantes()
         self.crear_pestaña_inscripciones()
 
-        self.crear_barra_estado(main_frame)
+        self.crear_barra_estado(self.main_frame)
 
     def crear_frame_estadisticas(self, parent):
         stats_frame = ttk.LabelFrame(parent, text="Estadísticas Generales", padding=10)
@@ -106,64 +110,40 @@ class MainWindow:
     def crear_treeview_eventos(self, parent):
         tree_frame = ttk.Frame(parent)
         tree_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
-        # Si no lesgusta el campo de descripción, se puede eliminar o ajustar el ancho
-        # de la columna en la línea de abajo
-        columns = ('ID', 'Nombre', 'Descripción','Fecha Inicio','Fecha Fin', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
+        
+        columns = ('ID', 'Nombre', 'Descripción', 'Fecha Inicio', 'Fecha Fin', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
         self.eventos_tree = ttk.Treeview(tree_frame, columns=columns, show='headings')
         
-        # Definición y ajuste de encabezados y columnas
-        self.eventos_tree.heading('ID', text='ID')
-        self.eventos_tree.column('ID', width=50, anchor=tk.CENTER)
-
-        self.eventos_tree.heading('Nombre', text='Nombre')
-        self.eventos_tree.column('Nombre', width=150, anchor=tk.W)
-
-        self.eventos_tree.heading('Descripción', text='Descripción')
-        self.eventos_tree.column('Descripción', width=250, anchor=tk.W)
-
-        self.eventos_tree.heading('Fecha Inicio', text='Fecha Inicio')
-        self.eventos_tree.column('Fecha Inicio', width=160, anchor=tk.CENTER)
-
-        self.eventos_tree.heading('Ubicación', text='Ubicación')
-        self.eventos_tree.column('Ubicación', width=150, anchor=tk.W)
-
-        self.eventos_tree.heading('Categoría', text='Categoría')
-        self.eventos_tree.column('Categoría', width=100, anchor=tk.CENTER)
-
-        self.eventos_tree.heading('Inscritos/Capacidad', text='Inscritos/Capacidad')
-        self.eventos_tree.column('Inscritos/Capacidad', width=140, anchor=tk.CENTER)
-
-        self.eventos_tree.heading('Estado', text='Estado')
-        self.eventos_tree.column('Estado', width=90, anchor=tk.CENTER)
-
+        # Configuración de columnas (mejor organizada)
+        column_config = {
+            'ID': {'width': 50, 'anchor': tk.CENTER},
+            'Nombre': {'width': 150, 'anchor': tk.W},
+            'Descripción': {'width': 250, 'anchor': tk.W},
+            'Fecha Inicio': {'width': 160, 'anchor': tk.CENTER},
+            'Fecha Fin': {'width': 160, 'anchor': tk.CENTER},
+            'Ubicación': {'width': 150, 'anchor': tk.W},
+            'Categoría': {'width': 100, 'anchor': tk.CENTER},
+            'Inscritos/Capacidad': {'width': 140, 'anchor': tk.CENTER},
+            'Estado': {'width': 90, 'anchor': tk.CENTER}
+        }
         
+        for col, config in column_config.items():
+            self.eventos_tree.heading(col, text=col)
+            self.eventos_tree.column(col, **config)
+
+        # Scrollbars
+        v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
+        h_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.eventos_tree.xview)
+        self.eventos_tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+
+        # Posicionamiento usando grid (más control)
+        self.eventos_tree.grid(row=0, column=0, sticky="nsew")
+        v_scrollbar.grid(row=0, column=1, sticky="ns")
+        h_scrollbar.grid(row=1, column=0, sticky="ew")
         
-        for col in columns:
-            self.eventos_tree.heading(col, text=col) #
-            self.eventos_tree.column(col, anchor=tk.CENTER)
-            
-            #borrar la columna de descripción si no se quiere mostrar
-            self.eventos_tree.column("Descripción", width=250, anchor=tk.W)
-            
-            v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
-            h_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.eventos_tree.xview)
-            self.eventos_tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
 
-            # Posicionamiento
-            self.eventos_tree.grid(row=0, column=0, sticky="nsew")
-            v_scrollbar.grid(row=0, column=1, sticky="ns")
-            h_scrollbar.grid(row=1, column=0, sticky="ew")
-            
-            tree_frame.grid_rowconfigure(0, weight=1)
-            tree_frame.grid_columnconfigure(0, weight=1)
-
-        # v_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.eventos_tree.yview)
-        # h_scrollbar = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.eventos_tree.xview)
-        # self.eventos_tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
-
-        # self.eventos_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        # v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        # h_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
     def cargar_eventos(self):
         for item in self.eventos_tree.get_children():
