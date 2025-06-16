@@ -108,7 +108,8 @@ class EventoLogin(tk.Tk):
         # Diccionario de usuarios válidos (en minúsculas)
         usuarios_validos = {
             "ariana": "Hola123",
-            "razor": "Gaia05"
+            "razor": "Gaia05",
+            "melany": "Socrates06"
         }
 
         if not username or not password:
