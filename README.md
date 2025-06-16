@@ -35,6 +35,7 @@ Este sistema permite:
 ```bash
 pip install mysql-connector-python
 pip install ttkthemes
+pip install PyQt5
 ```
 
 ## 🔀 Clonar Repositorio
@@ -43,7 +44,7 @@ git clone https://github.com/Quiroz-Zuniga/Gestor-de-Eventos.git
 ```
 
 ## 🚀 Ejecutar la App
-python main.py
+python login.py
 
 ## 👩‍💻 Autores
 Ruben Quiroz, Heber Lopez, Jennifer Gomez, Hady Amador, Genesis Narvaez. <br>
