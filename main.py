@@ -143,7 +143,7 @@ class MainWindow:
         tree_frame = ttk.Frame(parent)
         tree_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
 
-        columns = ('ID', 'Nombre', 'Fecha Inicio', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
+        columns = ('ID', 'Nombre','Descripción', 'Fecha Inicio','Fecha Final', 'Ubicación', 'Categoría', 'Inscritos/Capacidad', 'Estado')
         self.eventos_tree = ttk.Treeview(tree_frame, columns=columns, show='headings', height=15)
 
         for col in columns:
@@ -168,7 +168,9 @@ class MainWindow:
             self.eventos_tree.insert('', 'end', values=(
                 evento.id_evento,
                 evento.nombre,
-                evento.fecha_inicio_str(),
+                evento.descripcion,
+                evento.fecha_inicio.strftime("%d/%m/%Y %I:%M %p"),
+                evento.fecha_fin.strftime("%d/%m/%Y %I:%M %p"),
                 evento.ubicacion,
                 evento.categoria,
                 f"{evento.inscritos}/{evento.capacidad_maxima}",
